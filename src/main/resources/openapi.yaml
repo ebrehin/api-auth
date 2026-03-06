@@ -1,0 +1,106 @@
+openapi: 3.0.3
+info:
+  title: API Authentification
+  description: |
+    API REST permettant la gestion de l'authentification.
+    Cette API permet de se connecter et de se deconnecter via JWT.
+  version: 1.0.0
+  contact:
+    name: Support API
+    email: support@example.com
+
+servers:
+  - url: http://info-tpsi.univ-brest.fr:10061
+    description: Serveur de developpement
+
+tags:
+  - name: auth
+    description: Operations liees a l'authentification
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Connecte un utilisateur
+      description: Retourne un token JWT si les identifiants sont valides
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthLoginRequest'
+      responses:
+        '200':
+          description: Authentification reussie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthLoginResponse'
+        '400':
+          description: Donnees invalides
+        '401':
+          description: Identifiants invalides
+        '500':
+          description: Erreur serveur interne
+
+  /auth/logout:
+    post:
+      tags:
+        - auth
+      summary: Deconnecte un utilisateur
+      description: Indique au client de supprimer le token JWT
+      operationId: logout
+      responses:
+        '200':
+          description: Deconnexion effectuee
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogoutResponse'
+        '500':
+          description: Erreur serveur interne
+
+components:
+  schemas:
+    AuthLoginRequest:
+      type: object
+      description: Requete de connexion
+      properties:
+        pseudo:
+          type: string
+          description: Pseudo de l'utilisateur
+          example: "jdupont"
+        mdp:
+          type: string
+          description: Mot de passe de l'utilisateur
+          example: "Secret123!"
+      required:
+        - pseudo
+        - mdp
+    AuthLoginResponse:
+      type: object
+      description: Reponse de connexion
+      properties:
+        token:
+          type: string
+          description: Token JWT
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        pseudo:
+          type: string
+          description: Pseudo authentifie
+          example: "jdupont"
+      required:
+        - token
+        - pseudo
+    LogoutResponse:
+      type: object
+      description: Reponse de deconnexion
+      properties:
+        message:
+          type: string
+          description: Message de deconnexion
+          example: "Deconnecte cote client: supprimez le token JWT."
+      required:
+        - message
