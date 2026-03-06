@@ -1,0 +1,5 @@
+services:
+  auth-api: gitlab-depinfo.univ-brest.fr:5050/e22200893/apis/auth-api:v1.0.4
+  ports:
+    - "10061:8081"
+  restart: unless-stoppped
